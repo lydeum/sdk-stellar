@@ -27,8 +27,7 @@ gulp.task('mocha', function(done) {
 
   processMocha([
     './test/setup.js',
-    './test/accounts/**.js',
-    './test/transactions/**.js',
+    './test/integration/**/*.js',
   ])
 
 })

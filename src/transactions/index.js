@@ -4,8 +4,8 @@ class Transactions {
 
   constructor(options = {}) {
 
-    this._accounts = [options.sourceAccount]
-    this.sourceAccount = options.sourceAccount
+    this.account = options.account
+    this._accounts = [options.account]
 
   }
 
@@ -34,9 +34,41 @@ class Transactions {
 
   }
 
+  changeData(data) {
+
+    const options = {}
+
+    const keys = Object.keys(data)
+    for(let i = 0, l = keys.length; i < l; i++) {
+      const key = keys[i]
+
+      options.name = key
+      options.value = data[key]
+    }
+
+    this._transaction.addOperation(stellar.sdk.Operation.manageData(options))
+
+    return this
+  }
+
+  changeTrust(asset, limit) {
+
+    const options = {
+      asset
+    }
+
+    if(limit) {
+      options.limit = limit
+    }
+
+    this._transaction.addOperation(stellar.sdk.Operation.changeTrust(options))
+
+    return this
+  }
+
   async open() {
 
-    this._transaction = new stellar.sdk.TransactionBuilder(await stellar.server.loadAccount(this.sourceAccount.key))
+    this._transaction = new stellar.sdk.TransactionBuilder(await stellar.server.loadAccount(this.account.key))
 
     return this
   }
@@ -65,7 +97,7 @@ class Transactions {
     try {
       const transaction = this._transaction.build()
 
-      transaction.sign(stellar.sdk.Keypair.fromSecret(this.sourceAccount.secret))
+      transaction.sign(stellar.sdk.Keypair.fromSecret(this.account.secret))
 
       const result = await stellar.server.submitTransaction(transaction)
 
