@@ -6,6 +6,7 @@ class Transactions {
 
     this.account = options.account
     this._accounts = [options.account]
+    this.signers = [options.account]
 
   }
 
@@ -13,6 +14,14 @@ class Transactions {
     this._transaction.addMemo(stellar.sdk.Memo.text(text))
 
     return this
+  }
+
+  addOptions(options = {}) {
+
+    this._transaction.addOperation(stellar.sdk.Operation.setOptions(options))
+
+    return this
+
   }
 
   addPayment(destinationAccount, amount, assetType) {
@@ -32,6 +41,19 @@ class Transactions {
 
     return this
 
+  }
+
+  addSigner(destinationAccount, weight = 1) {
+    this._pushAccount(destinationAccount)
+
+    this._transaction.addOperation(stellar.sdk.Operation.setOptions({
+      signer: {
+        ed25519PublicKey: destinationAccount.key,
+        weight
+      }
+    }))
+
+    return this
   }
 
   changeData(data) {
@@ -62,6 +84,14 @@ class Transactions {
     }
 
     this._transaction.addOperation(stellar.sdk.Operation.changeTrust(options))
+
+    return this
+  }
+
+  cosign(cosignAccount) {
+    this._pushAccount(cosignAccount)
+
+    this.signers.push(cosignAccount)
 
     return this
   }
@@ -97,7 +127,12 @@ class Transactions {
     try {
       const transaction = this._transaction.build()
 
-      transaction.sign(stellar.sdk.Keypair.fromSecret(this.account.secret))
+      // Add all signers
+      for(let i = 0, l = this.signers.length; i < l; i++) {
+        const account = this.signers[i]
+
+        transaction.sign(stellar.sdk.Keypair.fromSecret(account.secret))
+      }
 
       const result = await stellar.server.submitTransaction(transaction)
 
