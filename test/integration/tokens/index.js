@@ -44,7 +44,6 @@ describe('Tokens', function onAccounts() {
 
       // The receiving account must first accept the trust of the issuer
       const transaction1 = new sdk.Transactions({account: endor})
-      await transaction1.open()
 
       // Add the asset (shield) as a trusted asset for endor
       transaction1
@@ -57,7 +56,6 @@ describe('Tokens', function onAccounts() {
 
       // Empire sends 1 shield to Endor
       const transaction2 = new sdk.Transactions({account: empire})
-      await transaction2.open()
 
       transaction2
         .addPayment(endor, 1, shield)

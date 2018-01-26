@@ -22,7 +22,6 @@ describe('Activity', function onAccounts() {
           adaptor: new sdk.Adaptors.Disk({path: '/tmp/stream-token'})
         })
         const transaction = new sdk.Transactions({account: account1})
-        await transaction.open()
 
         transaction
           .addPayment(account2, 500)

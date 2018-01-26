@@ -8,23 +8,29 @@ class Transactions {
     this._accounts = [options.account]
     this.signers = [options.account]
 
+    this._transaction = this.open()
+
   }
 
   addMemo(text) {
-    this._transaction.addMemo(stellar.sdk.Memo.text(text))
+    this
+      ._transaction
+      .then((transaction) => transaction.addMemo(stellar.sdk.Memo.text(text)))
 
     return this
   }
 
   addOptions(options = {}) {
-
-    this._transaction.addOperation(stellar.sdk.Operation.setOptions(options))
+    this
+      ._transaction
+      .then((transaction) => transaction.addOperation(stellar.sdk.Operation.setOptions(options)))
 
     return this
 
   }
 
   addPayment(destinationAccount, amount, assetType) {
+
     this._pushAccount(destinationAccount)
 
     let asset = stellar.sdk.Asset.native()
@@ -33,25 +39,30 @@ class Transactions {
       asset = assetType
     }
 
-    this._transaction.addOperation(stellar.sdk.Operation.payment({
-      amount: amount.toString(),
-      asset,
-      destination: destinationAccount.key
-    }))
+    this
+      ._transaction
+      .then((transaction) => transaction.addOperation(stellar.sdk.Operation.payment({
+        amount: amount.toString(),
+        asset,
+        destination: destinationAccount.key
+      })))
 
     return this
 
   }
 
   addSigner(destinationAccount, weight = 1) {
+
     this._pushAccount(destinationAccount)
 
-    this._transaction.addOperation(stellar.sdk.Operation.setOptions({
-      signer: {
-        ed25519PublicKey: destinationAccount.key,
-        weight
-      }
-    }))
+    this
+      ._transaction
+      .then((transaction) => transaction.addOperation(stellar.sdk.Operation.setOptions({
+        signer: {
+          ed25519PublicKey: destinationAccount.key,
+          weight
+        }
+      })))
 
     return this
   }
@@ -68,7 +79,9 @@ class Transactions {
       options.value = data[key]
     }
 
-    this._transaction.addOperation(stellar.sdk.Operation.manageData(options))
+    this
+      ._transaction
+      .then((transaction) => transaction.addOperation(stellar.sdk.Operation.manageData(options)))
 
     return this
   }
@@ -83,7 +96,9 @@ class Transactions {
       options.limit = limit
     }
 
-    this._transaction.addOperation(stellar.sdk.Operation.changeTrust(options))
+    this
+      ._transaction
+      .then((transaction) => transaction.addOperation(stellar.sdk.Operation.changeTrust(options)))
 
     return this
   }
@@ -98,9 +113,18 @@ class Transactions {
 
   async open() {
 
-    this._transaction = new stellar.sdk.TransactionBuilder(await stellar.server.loadAccount(this.account.key))
+    return new Promise(async (resolve, reject) => {
 
-    return this
+      try {
+        const transaction = new stellar.sdk.TransactionBuilder(await stellar.server.loadAccount(this.account.key))
+
+        resolve(transaction)
+      }
+      catch(e) {
+        reject(e)
+      }
+
+    })
   }
 
   _pushAccount(account) {
@@ -125,7 +149,8 @@ class Transactions {
   async sign() {
 
     try {
-      const transaction = this._transaction.build()
+      const _transaction = await this._transaction
+      const transaction = _transaction.build()
 
       // Add all signers
       for(let i = 0, l = this.signers.length; i < l; i++) {

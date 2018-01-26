@@ -15,7 +15,7 @@ describe('Transactions', function onTransactions() {
     await friendbot(account2)
 
     const transaction = new sdk.Transactions({account: account1})
-    await transaction.open()
+    //await transaction.open()
 
     transaction
       .addPayment(account2, 500)
@@ -43,7 +43,6 @@ describe('Transactions', function onTransactions() {
     await friendbot(account3)
 
     const transaction1 = new sdk.Transactions({account: account1})
-    await transaction1.open()
 
     transaction1
       .addSigner(account2) // Default weight is 1
@@ -58,7 +57,6 @@ describe('Transactions', function onTransactions() {
     await transaction1.sign()
 
     const transaction2 = new sdk.Transactions({account: account1})
-    await transaction2.open()
 
     transaction2
       .addPayment(account3, 500)
