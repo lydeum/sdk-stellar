@@ -1,5 +1,6 @@
 const Buffer = require('safe-buffer').Buffer
 const stellar = require('../lib/stellar')
+const StellarHDWallet = require('stellar-hd-wallet')
 const Transactions = require('../transactions')
 
 class Account {
@@ -9,6 +10,7 @@ class Account {
     this.balances = []
     this.data = {}
     this.key = options.key || ''
+    this.mnemonic = options.mnemonic || null
     this.secret = options.secret || ''
 
     // If account is empty, treat it as new
@@ -52,11 +54,32 @@ class Account {
 
   create() {
 
+    /*
     const pair = stellar.sdk.Keypair.random()
 
     this.key = pair.publicKey()
     this.secret = pair.secret()
+    */
 
+    let wallet = null
+
+    // Loading a previous wallet
+    if(this.mnemonic) {
+      wallet = StellarHDWallet.fromMnemonic(this.mnemonic)
+    }
+    // Generating a new wallet
+    else {
+      this.mnemonic = StellarHDWallet.generateMnemonic()
+      wallet = StellarHDWallet.fromMnemonic(this.mnemonic)
+    }
+
+    this.key = wallet.getPublicKey(0)
+    this.secret = wallet.getSecret(0)
+
+  }
+
+  deleteMnemonic() {
+    this.mnemonic = null
   }
 
   history() {
