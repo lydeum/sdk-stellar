@@ -3,30 +3,19 @@ const sdk = require('../../../src')
 
 describe('Accounts', function onAccounts() {
 
-  it('should initialize an empty constructor', function() {
+  it('should create an empty account', function() {
 
     const account = new sdk.Accounts()
 
     expect(account.balances.length).to.equal(0)
-    expect(account.key).to.equal('')
-    expect(account.secret).to.equal('')
-
-  })
-
-  it('should create an account', function() {
-
-    const account = new sdk.Accounts()
-    account.create()
-
-    expect(account.key).to.be.a('string')
-    expect(account.secret).to.be.a('string')
+    expect(account.key.length > 0).to.be.true
+    expect(account.secret.length > 0).to.be.true
 
   })
 
   it('should load an empty account', async function() {
 
     const account = new sdk.Accounts()
-    account.create()
     await account.load()
 
     expect(account.balances[0].balance).to.equal(0)
@@ -37,7 +26,6 @@ describe('Accounts', function onAccounts() {
     this.timeout(10000)
 
     const account = new sdk.Accounts()
-    account.create()
     await friendbot(account)
     await account.load()
 
@@ -49,7 +37,6 @@ describe('Accounts', function onAccounts() {
     this.timeout(10000)
 
     const account = new sdk.Accounts()
-    account.create()
     await friendbot(account)
     const page = await account.history()
     //console.log('page', page)
@@ -63,7 +50,6 @@ describe('Accounts', function onAccounts() {
     new Promise(async (resolve, reject) => {
 
       const account = new sdk.Accounts()
-      account.create()
       await friendbot(account)
 
       await account.changeData({foo: 'bar'})

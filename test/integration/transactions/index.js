@@ -7,11 +7,9 @@ describe('Transactions', function onTransactions() {
     this.timeout(25000)
 
     const account1 = new sdk.Accounts()
-    account1.create()
     await friendbot(account1)
 
     const account2 = new sdk.Accounts()
-    account2.create()
     await friendbot(account2)
 
     const transaction = new sdk.Transactions({account: account1})
@@ -31,15 +29,12 @@ describe('Transactions', function onTransactions() {
     this.timeout(30000)
 
     const account1 = new sdk.Accounts()
-    account1.create()
     await friendbot(account1)
 
     const account2 = new sdk.Accounts()
-    account2.create()
     await friendbot(account2)
 
     const account3 = new sdk.Accounts()
-    account3.create()
     await friendbot(account3)
 
     const transaction1 = new sdk.Transactions({account: account1})

@@ -9,11 +9,9 @@ describe('Activity', function onAccounts() {
     new Promise(async (resolve, reject) => {
 
       const account1 = new sdk.Accounts()
-      account1.create()
       await friendbot(account1)
 
       const account2 = new sdk.Accounts()
-      account2.create()
       await friendbot(account2)
 
       try {

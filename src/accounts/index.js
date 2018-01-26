@@ -11,6 +11,11 @@ class Account {
     this.key = options.key || ''
     this.secret = options.secret || ''
 
+    // If account is empty, treat it as new
+    if(this.key == '' && this.secret == '') {
+      this.create()
+    }
+
   }
 
   balance(type) {

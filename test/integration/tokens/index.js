@@ -9,7 +9,6 @@ describe('Tokens', function onAccounts() {
     new Promise(async (resolve, reject) => {
 
       const empire = new sdk.Accounts()
-      empire.create()
       await friendbot(empire)
 
       // Create asset and assign to account
@@ -31,7 +30,6 @@ describe('Tokens', function onAccounts() {
     new Promise(async (resolve, reject) => {
 
       const empire = new sdk.Accounts()
-      empire.create()
       await friendbot(empire)
 
       // Create a new asset (as token)
@@ -39,7 +37,6 @@ describe('Tokens', function onAccounts() {
       const shield = await asset.create()
 
       const endor = new sdk.Accounts()
-      endor.create()
       await friendbot(endor)
 
       // The receiving account must first accept the trust of the issuer
