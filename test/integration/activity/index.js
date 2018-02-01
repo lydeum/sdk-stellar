@@ -17,7 +17,8 @@ describe('Activity', function onAccounts() {
       try {
         const activity = new sdk.Activity({
           account: account1,
-          adaptor: new sdk.Adaptors.Disk({path: '/tmp/stream-token'})
+          //adaptor: new sdk.Adaptors.Disk({path: '/tmp/stream-token'})
+          adaptor: new sdk.Adaptors.Memory()
         })
         const transaction = new sdk.Transactions({account: account1})
 

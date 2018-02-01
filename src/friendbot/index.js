@@ -3,7 +3,16 @@ const stellar = require('../lib/stellar')
 
 module.exports = async function friendbot(account) {
 
-  const url = `${stellar.host}/friendbot?addr=${account.key}`
+  let key = null
+
+  if(typeof account == 'object') {
+    key = account.key
+  }
+  else {
+    key = account
+  }
+
+  const url = `${stellar.host}/friendbot?addr=${key}`
 
   return new Promise(async (resolve, reject) => {
 

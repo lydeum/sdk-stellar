@@ -29,9 +29,18 @@ class Transactions {
 
   }
 
-  addPayment(destinationAccount, amount, assetType) {
+  addPayment(destinationAccount, amount, assetType = null) {
 
-    this._pushAccount(destinationAccount)
+    let destinationKey = null
+
+    if(typeof destinationAccount == 'object') {
+      destinationKey = destinationAccount.key
+      this._pushAccount(destinationAccount)
+    }
+    // Account is a string
+    else {
+      destinationKey = destinationAccount
+    }
 
     let asset = stellar.sdk.Asset.native()
 
@@ -39,13 +48,15 @@ class Transactions {
       asset = assetType
     }
 
+    const options = {
+      amount: amount.toString(),
+      asset,
+      destination: destinationKey
+    }
+
     this
       ._transaction
-      .then((transaction) => transaction.addOperation(stellar.sdk.Operation.payment({
-        amount: amount.toString(),
-        asset,
-        destination: destinationAccount.key
-      })))
+      .then((transaction) => transaction.addOperation(stellar.sdk.Operation.payment(options)))
 
     return this
 
@@ -178,6 +189,7 @@ class Transactions {
     }
     catch(e) {
       console.error('Could not sign transaction', e)
+      throw e
     }
 
   }

@@ -1,4 +1,4 @@
-const Buffer = require('safe-buffer').Buffer
+const request = require('superagent')
 const stellar = require('../lib/stellar')
 const StellarHDWallet = require('stellar-hd-wallet')
 const Transactions = require('../transactions')
@@ -84,27 +84,35 @@ class Account {
 
   history() {
 
+    const urlAccountTransactions = `${stellar.host}/accounts/${this.key}/transactions`
+
     return new Promise(async (resolve, reject) => {
-      let page = null
 
       try {
-        page = await stellar.server
-          .transactions()
-          .forAccount(this.key)
-          .call()
 
-        resolve(page)
+        const result = await request.get(urlAccountTransactions)
+        const records = result.body._embedded.records
+        const transactions = []
+
+        for(let i = 0, l = records.length; i < l; i++) {
+          const record = records[i]
+          const id = record.id
+          const urlTransaction = `${stellar.host}/transactions/${id}/operations`
+
+          transactions.push(request.get(urlTransaction).then((res) => res.body._embedded.records[0]))
+        }
+
+        resolve(Promise.all(transactions))
       }
       catch(e) {
+        console.log('eeeeee', e)
         switch(e.data.status) {
 
           /*
           NOTE: For new accounts, the network can take a few seconds before populating transactions
           */
           case 404:
-            page = {
-              records: []
-            }
+            page = []
 
             return resolve(page)
 
