@@ -97,7 +97,7 @@ class Account {
         for(let i = 0, l = records.length; i < l; i++) {
           const record = records[i]
           const id = record.id
-          const urlTransaction = `${stellar.host}/transactions/${id}/operations`
+          const urlTransaction = `${stellar.host}/transactions/${id}/operations?order=desc`
 
           transactions.push(request.get(urlTransaction).then((res) => res.body._embedded.records[0]))
         }
@@ -105,19 +105,24 @@ class Account {
         resolve(Promise.all(transactions))
       }
       catch(e) {
-        console.log('eeeeee', e)
-        switch(e.data.status) {
 
-          /*
-          NOTE: For new accounts, the network can take a few seconds before populating transactions
-          */
-          case 404:
-            page = []
+        if(e.data && e.data.status) {
+          switch(e.data.status) {
 
-            return resolve(page)
+            /*
+            NOTE: For new accounts, the network can take a few seconds before populating transactions
+            */
+            case 404:
+              page = []
 
-          default:
-            reject('There was an error connecting to Horizon', e)
+              return resolve(page)
+
+            default:
+              reject('There was an error connecting to Horizon', e)
+          }
+        }
+        else {
+          reject('There was an error connecting to Horizon', e)
         }
       }
 

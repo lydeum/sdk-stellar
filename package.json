@@ -1,6 +1,6 @@
 {
   "name": "lydeum-sdk-stellar",
-  "version": "0.1.0-a6",
+  "version": "0.1.0-a7",
   "description": "",
   "main": "./src/index.js",
   "scripts": {

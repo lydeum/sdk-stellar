@@ -26,7 +26,8 @@ async function task() {
     const transaction = new sdk.Transactions({account: account1})
     console.log('Transaction started')
     transaction
-      .addPayment('GBG4QUUNHERCTAMCXMEYKCFM7N2IEI3SGSEC5ER4MQGQU6LC3EDB3WTH', 500)
+      //.addPayment('GBG4QUUNHERCTAMCXMEYKCFM7N2IEI3SGSEC5ER4MQGQU6LC3EDB3WTH', 500)
+      .addPayment('GCWNHSMLO465SPDOMQR2YSUJT7OGGDF63MAZ2JGDE7LTZUVGP5WGWKAH', 5000)
 
     await transaction.sign()
     console.log('Transaction signed')

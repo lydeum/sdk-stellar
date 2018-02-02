@@ -39,8 +39,8 @@ describe('Accounts', function onAccounts() {
     const account = new sdk.Accounts()
     await friendbot(account)
     const page = await account.history()
-    //console.log('page', page)
-    expect(page.records instanceof Array).to.be.true
+
+    expect(page instanceof Array).to.be.true
 
   })
 
